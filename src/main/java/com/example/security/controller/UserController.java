@@ -44,64 +44,32 @@ public class UserController {
 	private UserRepository userRepository;
 	
 
-	@Autowired
-	private RoleRepository roleRepository;
-	
-	
-	@Autowired
-	private PasswordEncoder encoder;
-	
-
-	@Autowired
-	private UserDetailsImpl userDetailsImpl;
-
-	@Autowired
-	private AuthenticationManager authenticationManager;
-
-	@Autowired
-	private JwtUtil jwtUtil;
 
 	@PreAuthorize("isAuthenticated()")
-    @GetMapping("/getAllUsers")
-    public List<User> findAllUsers() {
+    @GetMapping()
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
 	@PreAuthorize("isAuthenticated()")
-    @GetMapping("/findUser/{email}")
-    public Optional<User> findUser(@PathVariable String email) {
+    @GetMapping("/{email}")
+    public Optional<User> getUserByEmail(@PathVariable String email) {
         return userRepository.findByEmail(email);
     }
 
-	@PreAuthorize("isAuthenticated()")
-    @DeleteMapping("/cancel/{id}")
-    public List<User> cancelRegistration(@PathVariable int id) {
-        userRepository.deleteById((long) id);
-        return userRepository.findAll();
-    }
 
 	@PreAuthorize("isAuthenticated()")
-	@PostMapping("/users")
+	@PostMapping()
 	public User createUser(@Validated @RequestBody User user) {
 		return userRepository.save(user);
 	}
 
 
-	@PreAuthorize("isAuthenticated()")
-	@DeleteMapping("/users/delete")
-	  public ResponseEntity<String> deleteAllUsers() {
-	    System.out.println("Delete All Users...");
-	 
-	    userRepository.deleteAll();
-	 
-	    return new ResponseEntity<>("All Users have been deleted!", HttpStatus.OK);
-	  }
-
 
 
 	@PreAuthorize("isAuthenticated()")
-	@PutMapping("/users/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long id,
+	@PutMapping("/{id}")
+	public ResponseEntity<User> updateUser(@PathVariable Long id,
 			@Validated @RequestBody User userDetails) throws ResourceNotFoundException {
 		User user = userRepository.findById(id)
 		.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
@@ -116,16 +84,34 @@ public class UserController {
 
 
 	@PreAuthorize("isAuthenticated()")
-	@DeleteMapping("/users/{id}")
-	public Map<String, Boolean> deleteUser(@PathVariable(value = "id") Long id)
+	@DeleteMapping("/{id}")
+	public boolean deleteUser(@PathVariable(value = "id") Long id)
 			throws ResourceNotFoundException {
 		User user = userRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
 
 		userRepository.delete(user);
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("deleted", Boolean.TRUE);
-		return response;
+		return true;
+	}
+
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/blockUser")
+	public void blockUser(@RequestBody User user) throws ResourceNotFoundException {
+		User u = userRepository.findById(user.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + user.getId()));
+		u.setActive(true);
+		userRepository.saveAndFlush(u);
+	}
+
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/unlockUser")
+	public void unlockUser(@RequestBody User user) throws ResourceNotFoundException {
+		User u = userRepository.findById(user.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + user.getId()));
+		u.setActive(false);
+		userRepository.saveAndFlush(u);
 	}
 	
 

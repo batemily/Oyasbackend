@@ -62,7 +62,6 @@ public class LoginController {
         }
         final UserDetails userDetails = userDetailsImpl.loadUserByUsername(loginRequest.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
-
         return new LoginResponse(jwt);
 
     }
@@ -74,7 +73,7 @@ public class LoginController {
             return ResponseEntity.badRequest().body(new Message("Error: This Email is already in use!"));
         }
         Role role = roleRepository.findRoleByName("user");
-        User user = new User(data.getEmail(), data.getFirstname(), data.getLastname(),  encoder.encode(data.getPassword()), data.getTel(), Collections.singletonList(role));
+        User user = new User(data.getEmail(), data.getFirstname(), data.getLastname(),  encoder.encode(data.getPassword()), data.getTel(), Collections.singletonList(role),true);
         userRepository.save(user);
         return ResponseEntity.ok(new Message ("User registered successfully!"));
     }

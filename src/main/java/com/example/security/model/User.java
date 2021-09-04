@@ -1,5 +1,11 @@
 package com.example.security.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.*;
@@ -11,6 +17,9 @@ import lombok.NoArgsConstructor;*/
 
 @Entity
 @Table(name = "T_USER")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
 	@Id
@@ -21,6 +30,7 @@ public class User {
 	private String firstName;
 	private String lastName;
 	private String password;
+	@JsonProperty("isActive")
 	private boolean isActive;
 	@Column(unique = true,nullable = false)
 	private String tel;
@@ -29,80 +39,16 @@ public class User {
 	inverseJoinColumns = {@JoinColumn(name="role_id",referencedColumnName = "id")})
 	private List<Role> roles;
 	//private List<RxCapteur> rxCapteurs;
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getFirstName() {
-		return firstName;
-	}
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-	public String getLastName() {
-		return lastName;
-	}
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getTel() {
-		return tel;
-	}
-	public void setTel(String tel) {
-		this.tel = tel;
-	}
-	public Long getId() {
-		return id;
-	}
-	/*public List<RxCapteur> getRxCapteurs() {
-		return rxCapteurs;
-	}
-	public void setRxCapteurs(List<RxCapteur> rxCapteurs) {
-		this.rxCapteurs = rxCapteurs;
-	}
-	*/
-	public List<Role> getRoles() {
-		return roles;
-	}
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
-	}
-	public User(Long id, String email, String firstName, String lastName, String password, boolean isActive, String tel,
-				List<Role> roles) {
-		super();
-		this.id = id;
+
+	public User(String email, String firstName, String lastName,  String password, String tel, List<Role> roles , boolean isActive){
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.password = password;
-		this.isActive = isActive;
-		this.tel = tel;
+		this.password =password;
 		this.roles = roles;
+		this.isActive =isActive;
 	}
-	public User(String email, String firstName, String lastName, String password, String tel,
-			List<Role> roles) {
-		super();
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.password = password;
-		this.tel = tel;
-		this.roles = roles;
-	}
-	public User() {
-		super();
-	}
-	/*public void setRxCapteur(List<RxCapteur> rxCapteurs) {
-		this.rxCapteurs= rxCapteurs;
-	}*/
+
 	
 	
 		
