@@ -2,6 +2,7 @@ package com.example.security.controller;
 
 import java.util.*;
 
+import com.example.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.security.config.Message;
 import com.example.security.dto.LoginRequest;
@@ -41,77 +34,62 @@ import exception.ResourceNotFoundException;
 public class UserController {	
 	
 	@Autowired
-	private UserRepository userRepository;
-	
+	private IUserService userService;
 
 
 	@PreAuthorize("isAuthenticated()")
     @GetMapping()
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
 	@PreAuthorize("isAuthenticated()")
     @GetMapping("/{email}")
-    public Optional<User> getUserByEmail(@PathVariable String email) {
-        return userRepository.findByEmail(email);
+    public User getUserByEmail(@PathVariable String email) throws ResourceNotFoundException {
+        return userService.getUserByEmail(email);
     }
 
 
 	@PreAuthorize("isAuthenticated()")
 	@PostMapping()
 	public User createUser(@Validated @RequestBody User user) {
-		return userRepository.save(user);
+		return userService.createUser(user);
 	}
-
-
 
 
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/{id}")
 	public ResponseEntity<User> updateUser(@PathVariable Long id,
 			@Validated @RequestBody User userDetails) throws ResourceNotFoundException {
-		User user = userRepository.findById(id)
-		.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
-		user.setEmail(userDetails.getEmail());
-		user.setLastName(userDetails.getLastName());
-		user.setFirstName(userDetails.getFirstName());
-		user.setTel(userDetails.getTel());
-		user.setRoles(userDetails.getRoles());
-		final User updateUser = userRepository.save(user);
+		final User updateUser = userService.updateUser(userDetails);
 		return ResponseEntity.ok(updateUser);
 	}
 
 
 	@PreAuthorize("isAuthenticated()")
 	@DeleteMapping("/{id}")
-	public boolean deleteUser(@PathVariable(value = "id") Long id)
-			throws ResourceNotFoundException {
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + id));
-
-		userRepository.delete(user);
-		return true;
+	public void deleteUser(@PathVariable(value = "id") Long id){
+		userService.deleteUser(id);
 	}
 
 
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/blockUser")
 	public void blockUser(@RequestBody User user) throws ResourceNotFoundException {
-		User u = userRepository.findById(user.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + user.getId()));
-		u.setActive(true);
-		userRepository.saveAndFlush(u);
+		userService.blockUser(user);
 	}
 
 
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/unlockUser")
 	public void unlockUser(@RequestBody User user) throws ResourceNotFoundException {
-		User u = userRepository.findById(user.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + user.getId()));
-		u.setActive(false);
-		userRepository.saveAndFlush(u);
+		userService.unlockUser(user);
+	}
+
+
+	@PostMapping("/resetPassword")
+	public void resetPassword(@RequestParam String email){
+
 	}
 	
 

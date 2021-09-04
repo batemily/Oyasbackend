@@ -10,10 +10,6 @@ import java.util.List;
 
 import javax.persistence.*;
 
-/*import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;*/
 
 @Entity
 @Table(name = "T_USER")

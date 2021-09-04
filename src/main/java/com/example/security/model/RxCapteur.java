@@ -1,8 +1,15 @@
 package com.example.security.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class RxCapteur {
 	
 	@Id
@@ -10,23 +17,5 @@ public class RxCapteur {
 	private Long id;
 	
 	private String name;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public RxCapteur(Long id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
-
-	public RxCapteur() {
-		super();
-	}
 
 }

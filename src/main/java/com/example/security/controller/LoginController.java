@@ -10,6 +10,7 @@ import com.example.security.repository.RoleRepository;
 import com.example.security.repository.UserRepository;
 import com.example.security.service.UserDetailsImpl;
 import com.example.security.util.JwtUtil;
+import exception.UserNotActiveException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.Optional;
 
 
 @RestController
@@ -51,7 +53,13 @@ public class LoginController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
-
+        Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+        if(optionalUser.isPresent()){
+            User user = optionalUser.get();
+            if(!user.isActive()){
+                throw new UserNotActiveException("Ce utilisateur n'est pas actif");
+            }
+        }
         try {
 
             authenticationManager.authenticate(
