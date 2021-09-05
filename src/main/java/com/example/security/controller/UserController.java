@@ -2,6 +2,7 @@ package com.example.security.controller;
 
 import java.util.*;
 
+import com.example.security.dto.ChangePasswordRequest;
 import com.example.security.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,6 +94,27 @@ public class UserController {
 	@GetMapping("/resetPassword")
 	public void resetPassword(@RequestParam("email") String email) throws ResourceNotFoundException, MessagingException {
 		userService.resetPassword(email);
+	}
+
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/changePassword")
+	public void changePassword(@RequestBody ChangePasswordRequest passwordRequest) throws ResourceNotFoundException {
+		userService.changePassword(passwordRequest);
+	}
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/changeUserInfo")
+	public User changeUserInfo(@RequestBody User userRequest) throws ResourceNotFoundException {
+		System.out.println(userRequest.toString());
+		User user = userService.getUserByEmail(userRequest.getEmail());
+		user.setFirstName(userRequest.getFirstName());
+		user.setLastName(userRequest.getLastName());
+		user.setEmail(userRequest.getEmail());
+		user.setTel(userRequest.getTel());
+		User up = userService.updateUser(user);
+		System.out.println(up.toString());
+		return up;
 	}
 	
 

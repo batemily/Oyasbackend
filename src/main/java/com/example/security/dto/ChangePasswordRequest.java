@@ -10,12 +10,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RegisterRequest {
-	
-	private String firstName;
-	private String lastName;
-	private String email;
-	private String password;
-	private String tel;
+public class ChangePasswordRequest {
 
+    private String email;
+    private String oldPassword;
+    private String newPassword;
 }

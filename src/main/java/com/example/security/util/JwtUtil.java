@@ -36,7 +36,6 @@ public class JwtUtil {
 		claims.put("email", user.getUsername());
 		claims.put("exp", new Date(System.currentTimeMillis()+EXPIRATION_DATE*1000));
 		return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
-	
 	}
 	
 	public String extractEmail(String token) {

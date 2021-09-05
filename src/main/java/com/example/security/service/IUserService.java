@@ -1,5 +1,6 @@
 package com.example.security.service;
 
+import com.example.security.dto.ChangePasswordRequest;
 import com.example.security.model.User;
 import exception.ResourceNotFoundException;
 
@@ -23,4 +24,6 @@ public interface IUserService {
     void unlockUser(User user) throws ResourceNotFoundException;
 
     void resetPassword(String email) throws ResourceNotFoundException, MessagingException;
+
+    void changePassword(ChangePasswordRequest passwordRequest) throws ResourceNotFoundException;
 }

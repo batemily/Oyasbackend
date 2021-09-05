@@ -1,5 +1,6 @@
 package com.example.security.service.impl;
 
+import com.example.security.dto.ChangePasswordRequest;
 import com.example.security.model.Role;
 import com.example.security.model.User;
 import com.example.security.repository.RoleRepository;
@@ -7,6 +8,7 @@ import com.example.security.repository.UserRepository;
 import com.example.security.service.IMailService;
 import com.example.security.service.IUserService;
 import com.example.security.util.RandomPasswordGenerator;
+import exception.PasswordException;
 import exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -90,5 +92,17 @@ public class UserService implements IUserService {
         user.setPassword(encodeNewPassword);
         mailService.sendUserNewPassword(email , newPassword);
         userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest passwordRequest) throws ResourceNotFoundException {
+        User user = getUserByEmail(passwordRequest.getEmail());
+        if(encoder.matches(passwordRequest.getOldPassword(),user.getPassword())){
+            String encodedPassword = encoder.encode(passwordRequest.getNewPassword());
+            user.setPassword(encodedPassword);
+            userRepository.saveAndFlush(user);
+        }else{
+            throw new PasswordException("Veuillez saisir le bon mot de passe");
+        }
     }
 }
