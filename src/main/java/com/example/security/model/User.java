@@ -2,6 +2,7 @@ package com.example.security.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,7 +30,7 @@ public class User {
 	private String lastName;
 	private String password;
 	@JsonProperty("isActive")
-	private boolean isActive;
+	private boolean isActive=true;
 	@Column(unique = true,nullable = false)
 	private String tel;
 	@ManyToMany(fetch = FetchType.EAGER)
