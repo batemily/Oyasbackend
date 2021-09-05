@@ -1,13 +1,20 @@
 package com.example.security.service.impl;
 
+import com.example.security.model.Role;
 import com.example.security.model.User;
+import com.example.security.repository.RoleRepository;
 import com.example.security.repository.UserRepository;
+import com.example.security.service.IMailService;
 import com.example.security.service.IUserService;
+import com.example.security.util.RandomPasswordGenerator;
 import exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -19,11 +26,17 @@ public class UserService implements IUserService {
     @Autowired
     private PasswordEncoder encoder;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private IMailService mailService;
+
 
 
     @Override
     public List<User> getAllUsers() {
-        return null;
+        return userRepository.findAll();
     }
 
     @Override
@@ -34,13 +47,17 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(User user) {
-        user.setPassword(encoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        if(user.getId()==null){
+            user.setPassword(encoder.encode(user.getPassword()));
+            Role role = roleRepository.findRoleByName("user");
+            user.setRoles(Collections.singletonList(role));
+        }
+        return userRepository.saveAndFlush(user);
     }
 
     @Override
     public User updateUser(User user) {
-        return null;
+        return createUser(user);
     }
 
     @Override
@@ -64,9 +81,14 @@ public class UserService implements IUserService {
         userRepository.saveAndFlush(u);
     }
 
+    @Transactional
     @Override
-    public void resetPassword(String email) throws ResourceNotFoundException {
+    public void resetPassword(String email) throws ResourceNotFoundException, MessagingException {
         User user = getUserByEmail(email);
-
+        String newPassword = RandomPasswordGenerator.generateRandomPassword(9);
+        String encodeNewPassword = encoder.encode(newPassword);
+        user.setPassword(encodeNewPassword);
+        mailService.sendUserNewPassword(email , newPassword);
+        userRepository.saveAndFlush(user);
     }
 }

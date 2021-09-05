@@ -81,7 +81,7 @@ public class LoginController {
             return ResponseEntity.badRequest().body(new Message("Error: This Email is already in use!"));
         }
         Role role = roleRepository.findRoleByName("user");
-        User user = new User(data.getEmail(), data.getFirstname(), data.getLastname(),  encoder.encode(data.getPassword()), data.getTel(), Collections.singletonList(role),true);
+        User user = new User(data.getEmail(), data.getFirstName(), data.getLastName(),  encoder.encode(data.getPassword()), data.getTel(), Collections.singletonList(role),true);
         userRepository.save(user);
         return ResponseEntity.ok(new Message ("User registered successfully!"));
     }

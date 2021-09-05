@@ -28,6 +28,8 @@ import com.example.security.util.JwtUtil;
 
 import exception.ResourceNotFoundException;
 
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin("*")
@@ -87,9 +89,10 @@ public class UserController {
 	}
 
 
-	@PostMapping("/resetPassword")
-	public void resetPassword(@RequestParam String email){
 
+	@GetMapping("/resetPassword")
+	public void resetPassword(@RequestParam("email") String email) throws ResourceNotFoundException, MessagingException {
+		userService.resetPassword(email);
 	}
 	
 

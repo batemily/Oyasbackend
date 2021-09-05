@@ -3,6 +3,7 @@ package com.example.security.service;
 import com.example.security.model.User;
 import exception.ResourceNotFoundException;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface IUserService {
@@ -21,5 +22,5 @@ public interface IUserService {
 
     void unlockUser(User user) throws ResourceNotFoundException;
 
-    void resetPassword(String email) throws ResourceNotFoundException;
+    void resetPassword(String email) throws ResourceNotFoundException, MessagingException;
 }

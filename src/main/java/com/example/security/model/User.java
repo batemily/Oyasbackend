@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class User {
 
 	@Id
@@ -43,6 +45,7 @@ public class User {
 		this.password =password;
 		this.roles = roles;
 		this.isActive =isActive;
+		this.tel = tel;
 	}
 
 	
