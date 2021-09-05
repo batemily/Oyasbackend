@@ -58,40 +58,40 @@ public class SecurityApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		
-		Role role = roleRepository.save(new Role("admin"));
-		//RxCapteur rxCapteur= rxCapteurRepository.save(new RxCapteur(null, "rx1"));
-		User user = new User();
-		user.setEmail("user@gmail.fr");
-		user.setPassword(encoder.encode("password"));
-		user.setRoles(Arrays.asList(role));
-		user.setTel("+216 54 175 896");
-		//user.setRxCapteur(java.util.Collections.singletonList(rxCapteur));
-		userRepository.save(user);
-
-
-		Role r =roleRepository.save(new Role("user"));
-		User u = new User();
-		u.setEmail("ali@gmail.com");
-		u.setPassword(encoder.encode("motdepasse"));
-		u.setRoles(Arrays.asList(r));
-		u.setTel("+216 54 175 457");
-		userRepository.save(u);
-
-		Capteur capteur= new Capteur();
-		capteur.setName("capteur1");
-		capteurRepository.save(capteur);
-
-		RxCapteur rxcapteur= new RxCapteur();
-		rxcapteur.setName("rxcapteur1");
-		rxCapteurRepository.save(rxcapteur);
-
-
-		DonneCapteur donnee= new DonneCapteur();
-		donnee.setNivBat((long) 20);
-		donnee.setNivEau((long)30);
-		donnee.setDateEnvoi(null);
-		donnee.setDateDernRecep(null);
-		donneeCapteurRepository.save(donnee);
+//		Role role = roleRepository.save(new Role("admin"));
+//		//RxCapteur rxCapteur= rxCapteurRepository.save(new RxCapteur(null, "rx1"));
+//		User user = new User();
+//		user.setEmail("user@gmail.fr");
+//		user.setPassword(encoder.encode("password"));
+//		user.setRoles(Arrays.asList(role));
+//		user.setTel("+216 54 175 896");
+//		//user.setRxCapteur(java.util.Collections.singletonList(rxCapteur));
+//		userRepository.save(user);
+//
+//
+//		Role r =roleRepository.save(new Role("user"));
+//		User u = new User();
+//		u.setEmail("ali@gmail.com");
+//		u.setPassword(encoder.encode("motdepasse"));
+//		u.setRoles(Arrays.asList(r));
+//		u.setTel("+216 54 175 457");
+//		userRepository.save(u);
+//
+//		Capteur capteur= new Capteur();
+//		capteur.setName("capteur1");
+//		capteurRepository.save(capteur);
+//
+//		RxCapteur rxcapteur= new RxCapteur();
+//		rxcapteur.setName("rxcapteur1");
+//		rxCapteurRepository.save(rxcapteur);
+//
+//
+//		DonneCapteur donnee= new DonneCapteur();
+//		donnee.setNivBat((long) 20);
+//		donnee.setNivEau((long)30);
+//		donnee.setDateEnvoi(null);
+//		donnee.setDateDernRecep(null);
+//		donneeCapteurRepository.save(donnee);
 //
 		
 	}
