@@ -1,4 +1,9 @@
 package com.example.security.dto;
+
+
+import lombok.ToString;
+
+@ToString
 public class LoginRequest {
 	private String email;
 	

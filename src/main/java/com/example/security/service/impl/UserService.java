@@ -71,7 +71,7 @@ public class UserService implements IUserService {
     public void blockUser(User user) throws ResourceNotFoundException {
         User u = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + user.getId()));
-        u.setActive(true);
+        u.setActive(false);
         userRepository.saveAndFlush(u);
     }
 
@@ -79,7 +79,7 @@ public class UserService implements IUserService {
     public void unlockUser(User user) throws ResourceNotFoundException {
         User u = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " + user.getId()));
-        u.setActive(false);
+        u.setActive(true);
         userRepository.saveAndFlush(u);
     }
 
@@ -104,5 +104,11 @@ public class UserService implements IUserService {
         }else{
             throw new PasswordException("Veuillez saisir le bon mot de passe");
         }
+    }
+
+    @Override
+    public User getUserById(Long id) throws ResourceNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for this id :: " +id));
     }
 }

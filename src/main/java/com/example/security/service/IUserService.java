@@ -26,4 +26,6 @@ public interface IUserService {
     void resetPassword(String email) throws ResourceNotFoundException, MessagingException;
 
     void changePassword(ChangePasswordRequest passwordRequest) throws ResourceNotFoundException;
+
+    User getUserById(Long id) throws ResourceNotFoundException;
 }

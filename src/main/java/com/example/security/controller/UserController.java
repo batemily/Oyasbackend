@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.example.security.dto.ChangePasswordRequest;
 import com.example.security.service.IUserService;
+import exception.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,17 @@ public class UserController {
 	
 	@Autowired
 	private IUserService userService;
+
+
+	@Autowired
+	private UserRepository userRepository;
+
+
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/by-id/{id}")
+	public User getUserById(@PathVariable Long id) throws ResourceNotFoundException {
+		return  userService.getUserById(id);
+	}
 
 
 	@PreAuthorize("isAuthenticated()")
@@ -105,17 +117,16 @@ public class UserController {
 
 	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/changeUserInfo")
-	public User changeUserInfo(@RequestBody User userRequest) throws ResourceNotFoundException {
-		System.out.println(userRequest.toString());
-		User user = userService.getUserByEmail(userRequest.getEmail());
-		user.setFirstName(userRequest.getFirstName());
-		user.setLastName(userRequest.getLastName());
-		user.setEmail(userRequest.getEmail());
-		user.setTel(userRequest.getTel());
-		User up = userService.updateUser(user);
-		System.out.println(up.toString());
-		return up;
+	public User changeUserInfo(@RequestBody User userRequest , @RequestParam("connectedUserMail") String connectedUserMail) throws ResourceNotFoundException {
+		Optional<User> optionalUser = userRepository.findByEmail(userRequest.getEmail());
+		if(optionalUser.isPresent() && !connectedUserMail.equals(userRequest.getEmail())){
+			throw new EmailException("Cet email existe deja");
+		}
+		return userService.updateUser(userRequest);
 	}
+
+
+
 	
 
 }
