@@ -54,8 +54,9 @@ public class LoginController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+        User user = User.builder().build();
         if(optionalUser.isPresent()){
-            User user = optionalUser.get();
+             user = optionalUser.get();
             if(!user.isActive()){
                 throw new UserNotActiveException("Ce utilisateur n'est pas actif");
             }
@@ -70,7 +71,12 @@ public class LoginController {
         }
         final UserDetails userDetails = userDetailsImpl.loadUserByUsername(loginRequest.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails);
-        return new LoginResponse(jwt);
+        return  LoginResponse.builder()
+			        		.jwt(jwt)
+			        		.nom(user.getFirstName())
+			        		.prenom(user.getLastName())
+			        		.email(user.getEmail())
+			        		.build();
 
     }
 

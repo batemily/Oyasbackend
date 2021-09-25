@@ -41,4 +41,19 @@ public class MailService implements IMailService {
             log.error(e.getMessage());
         }
     }
+    
+    @Override
+    public void sendAlertMessage(String recipientMail , String message) throws MessagingException {
+        MimeMessage htmlMailMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(htmlMailMessage, true);
+        helper.setTo(recipientMail);
+        helper.setSubject("Message d'Allert");
+        helper.setFrom(senderMail);
+        helper.setText(String.format(message));
+        try {
+            javaMailSender.send(htmlMailMessage);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
 }

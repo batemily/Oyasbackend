@@ -2,6 +2,7 @@ package com.example.security.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class User {
 
 	@Id
@@ -31,6 +33,8 @@ public class User {
 	private String password;
 	@JsonProperty("isActive")
 	private boolean isActive=true;
+	@JsonProperty("isConnected")
+	private boolean isConnected=false;
 	@Column(unique = true,nullable = false)
 	private String tel;
 	@ManyToMany(fetch = FetchType.EAGER)

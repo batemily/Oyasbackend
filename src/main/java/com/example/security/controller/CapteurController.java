@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.security.model.Capteur;
 import com.example.security.repository.CapteurRepository;
+import com.example.security.service.impl.CapteurService;
 
 import exception.ResourceNotFoundException;
 
@@ -31,58 +32,56 @@ public class CapteurController {
 	
 	
 	@Autowired
-	private CapteurRepository capteurRepository;
+	private CapteurService capteurService;
 	
 
     @GetMapping("/getAllCapteurs")
     public List<Capteur> findAllCapteurs() {
-        return capteurRepository.findAll();
+        return capteurService.getAll();
     }
     
     @GetMapping("/findCapteur/{id}")
-    public Optional<Capteur> findCapteur(@PathVariable Long id) {
-        return capteurRepository.findById(id);
+    public Capteur findCapteur(@PathVariable Long id) {
+        return capteurService.getById(id);
     }
     
     @DeleteMapping("/cancel/{id}")
-    public List<Capteur> cancelCapteur(@PathVariable int id) {
-        capteurRepository.deleteById((long) id);
-        return capteurRepository.findAll();
+    public void cancelCapteur(@PathVariable int id) {
     }
     
     @PostMapping("/capteurs")
 	public Capteur createCapteur(@Validated @RequestBody Capteur capteur) {
-		return capteurRepository.save(capteur);
+		return capteurService.add(capteur);
 	}
     
-    @DeleteMapping("/capteurs/delete")
-	  public ResponseEntity<String> deleteAllCapteurs() {
-	    System.out.println("Delete All Sensors...");
-	    capteurRepository.deleteAll();
-	    return new ResponseEntity<>("All Sensors have been deleted!", HttpStatus.OK);
-	  }
-    
-	@PutMapping("/capteurs/{id}")
-	public ResponseEntity<Capteur> updateCapteur(@PathVariable(value = "id") Long id,
-			@Validated @RequestBody Capteur capteur) throws ResourceNotFoundException {
-		Capteur capt = capteurRepository.findById(id)
-		.orElseThrow(() -> new ResourceNotFoundException("Sensor not found for this id :: " + id));
-		capt.setName(capteur.getName());
-		
-		final Capteur updateCapteur = capteurRepository.save(capt);
-		return ResponseEntity.ok(updateCapteur);
-		}
-	
-	@DeleteMapping("/capteurs/{id}")
-	public Map<String, Boolean> deleteCapteur(@PathVariable(value = "id") Long id)
-			throws ResourceNotFoundException {
-		Capteur capt = capteurRepository.findById(id)
-				.orElseThrow(() -> new ResourceNotFoundException("Sensor not found for this id :: " + id));
-		capteurRepository.delete(capt);
-		Map<String, Boolean> response = new HashMap<>();
-		response.put("deleted", Boolean.TRUE);
-		return response;
-	}
-	
+//    @DeleteMapping("/capteurs/delete")
+//	  public ResponseEntity<String> deleteAllCapteurs() {
+//	    System.out.println("Delete All Sensors...");
+//	    capteurService.deleteAll();
+//	    return new ResponseEntity<>("All Sensors have been deleted!", HttpStatus.OK);
+//	  }
+//    
+//	@PutMapping("/capteurs/{id}")
+//	public ResponseEntity<Capteur> updateCapteur(@PathVariable(value = "id") Long id,
+//			@Validated @RequestBody Capteur capteur) throws ResourceNotFoundException {
+//		Capteur capt = capteurService.findById(id)
+//		.orElseThrow(() -> new ResourceNotFoundException("Sensor not found for this id :: " + id));
+//		capt.setName(capteur.getName());
+//		
+//		final Capteur updateCapteur = capteurService.save(capt);
+//		return ResponseEntity.ok(updateCapteur);
+//		}
+//	
+//	@DeleteMapping("/capteurs/{id}")
+//	public Map<String, Boolean> deleteCapteur(@PathVariable(value = "id") Long id)
+//			throws ResourceNotFoundException {
+//		Capteur capt = capteurService.findById(id)
+//				.orElseThrow(() -> new ResourceNotFoundException("Sensor not found for this id :: " + id));
+//		capteurService.delete(capt);
+//		Map<String, Boolean> response = new HashMap<>();
+//		response.put("deleted", Boolean.TRUE);
+//		return response;
+//	}
+//	
 
 }

@@ -58,6 +58,8 @@ public class SecurityApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		
+	//	capteurRepository.save(new Capteur(123547L, "Capteur RGX-17"));
+		
 //		Role role = roleRepository.save(new Role("admin"));
 //		//RxCapteur rxCapteur= rxCapteurRepository.save(new RxCapteur(null, "rx1"));
 //		User user = new User();
