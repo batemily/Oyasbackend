@@ -1,7 +1,14 @@
 package com.example.security;
 
 
-import java.util.Arrays;
+import java.net.URISyntaxException;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.eclipse.paho.client.mqttv3.MqttClient;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //import javax.persistence.Column;
 
@@ -12,19 +19,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.thethingsnetwork.java.app.lib.Client;
+import org.thethingsnetwork.java.app.lib.Message;
 
-import com.example.security.model.Capteur;
-import com.example.security.model.DonneCapteur;
-import com.example.security.model.Role;
-import com.example.security.model.RxCapteur;
-//import com.example.security.model.RxCapteur;
-import com.example.security.model.User;
 import com.example.security.repository.CapteurRepository;
 import com.example.security.repository.DonneCapteurRepository;
 import com.example.security.repository.RoleRepository;
 import com.example.security.repository.RxCapteurRepository;
 //import com.example.security.repository.RxCapteurRepository;
 import com.example.security.repository.UserRepository;
+import com.example.security.util.OyasData;
 
 //import io.jsonwebtoken.lang.Arrays;
 //import io.jsonwebtoken.lang.Collections;
@@ -32,6 +36,9 @@ import com.example.security.repository.UserRepository;
 @SpringBootApplication
 public class SecurityApplication implements CommandLineRunner{
 
+	static String region = "asia-se";
+    static String appId = "sensorultra";
+    static String accessKey = "ttn-account-v2.g7M2c9s1lvj-ySg3cAc-CmAJw0thqRSFxrjFd3k7AVY";
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -51,14 +58,22 @@ public class SecurityApplication implements CommandLineRunner{
 	@Autowired
 	private PasswordEncoder encoder;
 	
+    private static Logger LOG = LoggerFactory.getLogger(SecurityApplication.class);
+	//@Autowired
+	//Queue<OyasData> queue;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(SecurityApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		
-	//	capteurRepository.save(new Capteur(123547L, "Capteur RGX-17"));
+		startRetreaveData();
+		getQueue().add(OyasData.builder()
+				.battData(10)
+				.rainData(0)
+				.build());
+		//	capteurRepository.save(new Capteur(123547L, "Capteur RGX-17"));
 		
 //		Role role = roleRepository.save(new Role("admin"));
 //		//RxCapteur rxCapteur= rxCapteurRepository.save(new RxCapteur(null, "rx1"));
@@ -97,10 +112,30 @@ public class SecurityApplication implements CommandLineRunner{
 
 		
 	}
+	private void startRetreaveData() throws URISyntaxException, MqttException {
+		Client client = new Client(region, appId, accessKey);
+        client.onError((Throwable _error) -> System.err.println("error: " + _error.getMessage()));
+
+        client.onMessage((String devId, Object  data) -> {
+        	//System.out.println("Message: " + devId + " " + data);
+        	byte[] payload = ((Message) data).getBinary("payload_raw");
+        	LOG.info("Message: " + devId + " " + payload[0] + " " + payload[1]);
+            getQueue().add(OyasData.builder()
+    				.battData(Math.abs(Integer.valueOf(payload[1])))
+    				.rainData(Integer.valueOf(payload[0]))
+    				.build());
+        });
+        client.onConnected((MqttClient _client) -> System.out.println("connected !"));
+        client.start();
+	}
 	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	@Bean
+	public Queue<OyasData> getQueue() {
+		return new LinkedList<OyasData>();
 	}
 	
 
