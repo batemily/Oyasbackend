@@ -32,11 +32,12 @@ public class MessageController {
 
     @GetMapping()
     public String sendMail(@RequestParam String message, @RequestParam String recipientMail) throws MessagingException {
+    	
     	if (NIVEAU_EAU.equals(message)) {
-			mailService.sendAlertMessage(recipientMail, "Le niveau d'eau est inférieur à 20%% ans la jarre.");
+			mailService.sendAlertMessage(recipientMail, "Niveau d'eau critique dans la jarre.Veuillez la remplir!!");
 		} 
     	if (NIVEAU_BATT.equals(message)) {
-			mailService.sendAlertMessage(recipientMail, "Le niveau de battérie du capteur est inférieur à 20 %% .");
+			mailService.sendAlertMessage(recipientMail, "Niveau de battérie du capteur critique.Veuillez la recharger!!");
 		}
 		return message;
     }
@@ -47,10 +48,10 @@ public class MessageController {
     public OyasData getData() {
     	OyasData oyasData;
     	if (queue.size()<2) {
-    		oyasData = formatData(queue.peek());
+    		oyasData = queue.peek();
 			
 		} else {
-			oyasData = queue.poll();
+			oyasData =queue.poll();
 		}
 		return oyasData;
     }

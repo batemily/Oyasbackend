@@ -70,7 +70,7 @@ public class SecurityApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		startRetreaveData();
 		getQueue().add(OyasData.builder()
-				.battData(10)
+				.battData(0)
 				.rainData(0)
 				.build());
 		//	capteurRepository.save(new Capteur(123547L, "Capteur RGX-17"));
@@ -122,7 +122,7 @@ public class SecurityApplication implements CommandLineRunner{
         	LOG.info("Message: " + devId + " " + payload[0] + " " + payload[1]);
             getQueue().add(OyasData.builder()
     				.battData(Math.abs(Integer.valueOf(payload[1])))
-    				.rainData(Integer.valueOf(payload[0]))
+    				.rainData(Math.abs(Integer.valueOf(payload[0])))
     				.build());
         });
         client.onConnected((MqttClient _client) -> System.out.println("connected !"));

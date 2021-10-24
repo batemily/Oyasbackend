@@ -47,7 +47,7 @@ public class MailService implements IMailService {
         MimeMessage htmlMailMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(htmlMailMessage, true);
         helper.setTo(recipientMail);
-        helper.setSubject("Message d'Allert");
+        helper.setSubject("Message d'Alerte");
         helper.setFrom(senderMail);
         helper.setText(String.format(message));
         try {
